@@ -340,11 +340,54 @@ function requestRow(r,staff=false){
  </div>`;
 }
 
+
 async function loadRequests(){
- if(!token){
-  $('#requestList').innerHTML='<div class="empty-state">Inicia sesión para consultar tus solicitudes.</div>';
+ const box = $('#requestList');
+ if (!box) return;
+
+ if (!token) {
+  box.innerHTML = '<div class="empty-state">Inicia sesión para consultar tus solicitudes.</div>';
   return;
  }
+
+ box.innerHTML = '<div class="empty-state">Cargando solicitudes...</div>';
+
+ try {
+  const rows = await api('/requests');
+
+  if (!Array.isArray(rows)) {
+   throw new Error('Respuesta inválida del servidor.');
+  }
+
+  box.innerHTML = rows.length
+   ? rows.map(r => requestRow(r)).join('')
+   : '<div class="empty-state">Todavía no tienes solicitudes registradas.</div>';
+
+ } catch (e) {
+  const message = e?.message || 'Error desconocido';
+
+  if (/401|Sesión no válida/i.test(message)) {
+   token = '';
+   localStorage.removeItem('ec_token');
+   setUser(null);
+   box.innerHTML = '<div class="empty-state">Tu sesión venció. Inicia sesión nuevamente.</div>';
+  } else {
+   box.innerHTML = `
+    <div class="empty-state">
+     <b>No fue posible cargar tus solicitudes.</b>
+     <p>${esc(message)}</p>
+     <button class="btn btn-light btn-small" id="retryRequestsInline">
+      Reintentar
+     </button>
+    </div>`;
+
+   $('#retryRequestsInline')?.addEventListener('click', loadRequests);
+  }
+
+  toast('Error al consultar solicitudes: ' + message);
+ }
+}
+
 
  try{
   const rows=await api('/requests');
