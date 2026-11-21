@@ -176,6 +176,116 @@ def migrate_legacy_users_table():
 
 
 @asynccontextmanager
+
+def migrate_legacy_operational_tables():
+    """Actualiza las tablas operativas sin eliminar registros."""
+    tables = set(inspect(engine).get_table_names())
+
+    additions = {
+        "collection_requests": {
+            "code": "VARCHAR(24)",
+            "user_id": "INTEGER",
+            "generator_type": "VARCHAR(30) DEFAULT 'hogar'",
+            "waste_type": "VARCHAR(30) DEFAULT 'reciclable'",
+            "flow": "VARCHAR(20) DEFAULT 'reciclable'",
+            "address": "VARCHAR(240) DEFAULT ''",
+            "notes": "TEXT",
+            "preferred_time": "VARCHAR(100)",
+            "status": "VARCHAR(30) DEFAULT 'recibida'",
+            "coordinator_id": "INTEGER",
+            "collector_id": "INTEGER",
+            "scheduled_date": "DATE",
+            "scheduled_time": "TIME",
+            "collected_at": "TIMESTAMP",
+            "weight_kg": "DOUBLE PRECISION",
+            "points_awarded": "INTEGER DEFAULT 0",
+            "created_at": "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+        },
+        "request_events": {
+            "request_id": "INTEGER",
+            "actor_id": "INTEGER",
+            "status": "VARCHAR(30) DEFAULT 'recibida'",
+            "detail": "TEXT",
+            "created_at": "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+        },
+        "notifications": {
+            "user_id": "INTEGER",
+            "request_id": "INTEGER",
+            "title": "VARCHAR(140) DEFAULT 'Actualización'",
+            "message": "TEXT DEFAULT ''",
+            "read": "BOOLEAN DEFAULT FALSE",
+            "created_at": "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+        },
+        "collection_evidence": {
+            "request_id": "INTEGER",
+            "actor_id": "INTEGER",
+            "material_type": "VARCHAR(40) DEFAULT 'mixto'",
+            "weight_kg": "DOUBLE PRECISION DEFAULT 0",
+            "photo_path": "VARCHAR(300) DEFAULT ''",
+            "notes": "TEXT",
+            "created_at": "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
+        }
+    }
+
+    with engine.begin() as connection:
+        for table, columns in additions.items():
+            if table not in tables:
+                continue
+
+            for name, definition in columns.items():
+                connection.execute(text(
+                    f'ALTER TABLE "{table}" '
+                    f'ADD COLUMN IF NOT EXISTS "{name}" {definition}'
+                ))
+
+        if "collection_requests" in tables:
+            connection.execute(text("""
+                UPDATE collection_requests
+                SET code = 'EC-LEGACY-' || id::text
+                WHERE code IS NULL OR BTRIM(code) = ''
+            """))
+
+            connection.execute(text("""
+                UPDATE collection_requests
+                SET
+                    generator_type = COALESCE(NULLIF(generator_type, ''), 'hogar'),
+                    waste_type = COALESCE(NULLIF(waste_type, ''), 'reciclable'),
+                    flow = CASE
+                        WHEN LOWER(COALESCE(waste_type, '')) IN ('organico', 'orgánico')
+                        THEN 'organico'
+                        ELSE COALESCE(NULLIF(flow, ''), 'reciclable')
+                    END,
+                    status = COALESCE(NULLIF(status, ''), 'recibida'),
+                    address = COALESCE(address, ''),
+                    points_awarded = COALESCE(points_awarded, 0),
+                    created_at = COALESCE(created_at, CURRENT_TIMESTAMP)
+            """))
+
+        if "request_events" in tables:
+            connection.execute(text("""
+                UPDATE request_events
+                SET status = COALESCE(status, 'recibida'),
+                    created_at = COALESCE(created_at, CURRENT_TIMESTAMP)
+            """))
+
+        if "notifications" in tables:
+            connection.execute(text("""
+                UPDATE notifications
+                SET title = COALESCE(title, 'Actualización'),
+                    message = COALESCE(message, ''),
+                    read = COALESCE(read, FALSE),
+                    created_at = COALESCE(created_at, CURRENT_TIMESTAMP)
+            """))
+
+        if "collection_evidence" in tables:
+            connection.execute(text("""
+                UPDATE collection_evidence
+                SET material_type = COALESCE(material_type, 'mixto'),
+                    weight_kg = COALESCE(weight_kg, 0),
+                    photo_path = COALESCE(photo_path, ''),
+                    created_at = COALESCE(created_at, CURRENT_TIMESTAMP)
+            """))
+
 async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
     migrate_legacy_users_table()
