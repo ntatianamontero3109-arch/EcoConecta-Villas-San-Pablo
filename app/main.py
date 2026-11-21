@@ -10,7 +10,7 @@ from fastapi import FastAPI, Depends, HTTPException, UploadFile, File, Form, Req
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
-from sqlalchemy import select, func, text
+from sqlalchemy import select, func, text, inspect
 from .database import Base, engine, get_db
 from .models import User, Request, RequestEvent, CollectionEvidence, Notification
 from .schemas import RegisterInput, LoginInput, RequestInput, AssignInput, ScheduleInput, CloseInput, AdvanceInput, ChatInput, AdminUserUpdate
@@ -52,11 +52,63 @@ def clear_login_failures(key: str):
     with _login_lock:
         _login_attempts.pop(key, None)
 
+
+def migrate_legacy_users_table():
+    """Corrige esquemas antiguos sin eliminar registros."""
+    inspector = inspect(engine)
+
+    if "users" not in inspector.get_table_names():
+        return
+
+    columns = {
+        column["name"]
+        for column in inspector.get_columns("users")
+    }
+
+    if "full_name" in columns:
+        return
+
+    with engine.begin() as connection:
+
+        if "name" in columns:
+            connection.execute(text(
+                'ALTER TABLE users RENAME COLUMN "name" TO full_name'
+            ))
+        else:
+            connection.execute(text(
+                "ALTER TABLE users ADD COLUMN full_name VARCHAR(120)"
+            ))
+
+        if "phone" in columns:
+            connection.execute(text("""
+                UPDATE users
+                SET full_name = COALESCE(
+                    NULLIF(BTRIM(full_name), ''),
+                    NULLIF(BTRIM(phone), ''),
+                    'Usuario ' || id::text
+                )
+                WHERE full_name IS NULL OR BTRIM(full_name) = ''
+            """))
+        else:
+            connection.execute(text("""
+                UPDATE users
+                SET full_name = 'Usuario ' || id::text
+                WHERE full_name IS NULL OR BTRIM(full_name) = ''
+            """))
+
+        connection.execute(text(
+            "ALTER TABLE users ALTER COLUMN full_name SET NOT NULL"
+        ))
+
+    _logger.info("Migración de usuarios completada correctamente.")
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # create_all crea tablas faltantes; no elimina ni reinicia datos existentes.
     Base.metadata.create_all(bind=engine)
+    migrate_legacy_users_table()
     yield
+
 
 
 def normalize_colombian_phone(phone: str) -> str:
