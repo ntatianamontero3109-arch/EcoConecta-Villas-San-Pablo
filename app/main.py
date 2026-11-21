@@ -102,6 +102,9 @@ def migrate_legacy_users_table():
                 _logger.warning(
                     "Columna agregada a users: %s", name
                 )
+                connection.execute(text(
+            "ALTER TABLE users ALTER COLUMN email DROP NOT NULL"
+        ))
 
         connection.execute(text("""
             UPDATE users
