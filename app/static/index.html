@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123c2c"><meta name="description" content="EcoConecta conecta a Villas de San Pablo con huerteros y recicladores para una gestión comunitaria de residuos.">
+  <title>EcoConecta | Villas de San Pablo</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="/static/styles.css?v=2.0.2">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="#inicio"><span class="brand-mark">e<span>c</span></span><span><b>EcoConecta</b><small>Villas de San Pablo</small></span></a>
+    <div class="side-label">MENÚ PRINCIPAL</div>
+    <nav class="nav"><button class="nav-item active" data-view="inicio"><span>⌂</span> Inicio</button><button class="nav-item community-only" data-view="solicitar"><span>＋</span> Solicitar recolección</button><button class="nav-item community-only" data-view="solicitudes"><span>▤</span> Mis solicitudes</button><button class="nav-item community-only" data-view="educacion"><span>✳</span> Aprende a separar</button><button class="nav-item community-only" data-view="puntos"><span>☆</span> Mis puntos</button><button class="nav-item staff-only hidden" data-view="operacion"><span>▦</span> Panel operativo</button></nav>
+    <div class="sidebar-bottom"><div class="help-card"><span class="help-icon">✦</span><b>Pequeñas acciones,<br>grandes cambios.</b><p>Una comunidad más limpia empieza contigo.</p></div><button class="profile-mini"><span class="avatar" id="avatar">EC</span><span><b id="sideName">Invitado</b><small id="sideRole">Comunidad</small></span><span class="dots">···</span></button></div>
+  </aside>
+  <main class="main">
+    <header class="topbar redesign-topbar">
+      <a class="site-brand" href="#inicio" aria-label="EcoConecta, inicio">
+        <img src="/static/img/logo-ecoconecta.png" alt="EcoConecta Villas de San Pablo">
+      </a>
+      <nav class="top-nav" aria-label="Navegación principal">
+        <button class="nav-item active" data-view="inicio">Inicio</button>
+        <button class="nav-item community-only" data-view="solicitar">Solicitar recolección</button>
+        <button class="nav-item community-only" data-view="educacion">Aprende a separar</button>
+        <button class="nav-item community-only" data-view="solicitudes">Mis solicitudes</button>
+        <button class="nav-item community-only" data-view="puntos">Mis puntos</button>
+        <button class="nav-item staff-only hidden" data-view="operacion">Panel operativo</button>
+      </nav>
+      <div class="header-actions">
+        <span class="page-crumb-hidden" id="pageCrumb">Inicio</span>
+        <button class="account-button" id="profileButton">Mi cuenta</button>
+        <span class="avatar top-avatar" id="topAvatar">EC</span>
+        <button class="logout hidden" id="logout">Cerrar sesión</button>
+        <button class="mobile-menu" id="mobileMenu" aria-label="Abrir menú">☰</button>
+      </div>
+    </header>
+    <div class="content">
+      <section class="view active" id="view-inicio">
+        <div class="welcome-row landing-hero">
+          <div class="hero-copy">
+            <div class="eyebrow">VILLAS DE SAN PABLO · BARRANQUILLA</div>
+            <h1>Redefiniendo los residuos.<br><em>Revivimos la naturaleza.</em></h1>
+            <p class="lead">Conecta con las iniciativas de aprovechamiento de tu comunidad. Separa mejor, solicita una recolección y descubre cómo tus residuos pueden convertirse en nuevas oportunidades.</p>
+            <div class="hero-actions">
+              <button class="btn btn-primary" data-go="solicitar">Solicitar recolección <span>↗</span></button>
+              <button class="btn btn-light" data-go="educacion">Aprender a separar</button>
+            </div>
+            <div class="hero-signature">
+              <span>Una comunidad que transforma</span>
+              <img src="/static/img/logo-villas-san-pablo.png" alt="Villas de San Pablo">
+            </div>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <div class="hero-art-label">ECONOMÍA CIRCULAR <span>✳</span></div>
+          </div>
+        </div>
+        <div class="landing-cards">
+          <article class="landing-card map-card">
+            <div><span class="card-kicker">PARTICIPA EN TU SECTOR</span><h3>Puntos de aprovechamiento</h3><p>Conecta con las rutas comunitarias de recolección.</p></div>
+            <button class="card-round-action" data-go="solicitar" aria-label="Solicitar recolección">↗</button>
+            <div class="map-lines" aria-hidden="true"><span></span><span></span><span></span><i>●</i></div>
+            <button class="card-bottom-link" data-go="solicitudes">Consulta tus solicitudes <b>→</b></button>
+          </article>
+          <article class="landing-card rate-card">
+            <span class="card-kicker">DOS RUTAS, UN PROPÓSITO</span>
+            <h3>Separa para transformar</h3>
+            <div class="route-pills"><span>Orgánicos</span><span>Reciclables</span></div>
+            <button class="card-bottom-link" data-go="educacion">Conoce los materiales <b>→</b></button>
+          </article>
+          <article class="landing-card tips-card">
+            <span class="card-kicker">APRENDE Y PARTICIPA</span>
+            <h3>Pequeños hábitos, grandes cambios.</h3>
+            <p>Encuentra consejos prácticos para separar y entregar tus residuos de forma responsable.</p>
+            <button class="card-bottom-link" data-go="educacion">Ver guía ambiental <b>→</b></button>
+          </article>
+          <article class="landing-card tags-card">
+            <span class="card-kicker">ACTIVA EL CAMBIO</span>
+            <div class="eco-tags"><span>Reutiliza</span><span>Separa</span><span>Composta</span><span>Recicla</span><span>Reduce</span></div>
+            <div class="tag-foot">Cada acción cuenta <b>✳</b></div>
+          </article>
+        </div>
+        <div class="impact-strip"><div><span class="impact-icon green">♻</span><span><b>Separa correctamente</b><small>Identifica cada residuo</small></span></div><div><span class="impact-icon yellow">↗</span><span><b>Coordina tu recolección</b><small>Con el colectivo indicado</small></span></div><div><span class="impact-icon blue">☆</span><span><b>Reconoce tu aporte</b><small>Acumula puntos al participar</small></span></div></div>
+        <div class="section-heading"><div><div class="eyebrow">ASÍ FUNCIONA</div><h2>Tu aporte mueve el ciclo</h2></div><span class="muted">Tres pasos sencillos</span></div>
+        <div class="steps-grid"><article class="step-card"><span class="step-number">01</span><div class="step-illustration organic">⌁</div><h3>Separa tus residuos</h3><p>Identifica si son orgánicos o reciclables y prepáralos adecuadamente.</p></article><article class="step-card"><span class="step-number">02</span><div class="step-illustration schedule">▣</div><h3>Solicita la recolección</h3><p>Registra tu solicitud y el colectivo responsable coordinará la atención.</p></article><article class="step-card"><span class="step-number">03</span><div class="step-illustration points">✳</div><h3>Haz parte del cambio</h3><p>Cuando se registre la recolección, recibirás puntos por tu participación.</p></article></div>
+        <div class="bottom-banner"><div><span class="eyebrow">ECONOMÍA CIRCULAR</span><h2>Lo que separas hoy,<br>puede transformar el mañana.</h2><p>Conoce las rutas y aprende a aprovechar mejor tus residuos.</p><button class="text-link" data-go="educacion">Explorar guía ambiental →</button></div><div class="banner-symbol">♻</div></div>
+      </section>
+      <section class="view" id="view-solicitar"><div class="page-title"><div class="eyebrow">CONECTAMOS TU SOLICITUD</div><h1>Solicitar recolección</h1><p>Cuéntanos qué necesitas entregar. La solicitud llegará al colectivo correspondiente.</p></div><div class="form-layout"><form id="requestForm" class="panel form-panel"><div class="form-section-title"><span>01</span><div><b>¿Qué tipo de residuo tienes?</b><small>Selecciona el flujo de recolección</small></div></div><div class="choice-grid"><label class="choice"><input type="radio" name="waste_type" value="organico" required><span class="choice-emoji">🌱</span><b>Orgánicos</b><small>Restos de frutas, verduras y residuos vegetales.</small><i>Atiende: huerteros</i></label><label class="choice"><input type="radio" name="waste_type" value="reciclable" required><span class="choice-emoji">♻️</span><b>Reciclables</b><small>Papel, cartón, plástico, vidrio y metales limpios.</small><i>Atiende: recicladores</i></label></div><div class="form-section-title"><span>02</span><div><b>Información de la recolección</b><small>Completa los datos necesarios para coordinar</small></div></div><div class="field-grid"><label class="field"><span>Tipo de generador</span><select name="generator_type" required><option value="hogar">Hogar</option><option value="unidad_productiva">Unidad productiva / negocio</option></select></label><label class="field"><span>Disponibilidad o preferencia horaria</span><select name="preferred_time"><option value="Flexible">Flexible</option><option value="Mañana">Mañana</option><option value="Tarde">Tarde</option><option value="Día de por medio">Día de por medio (hogar)</option></select></label><label class="field full"><span>Dirección de recolección</span><input name="address" id="requestAddress" placeholder="Barrio, calle, número o referencia" required minlength="5"></label><label class="field full"><span>Observaciones <small>(opcional)</small></span><textarea name="notes" rows="3" placeholder="Cuéntanos cantidad aproximada, tipo de material o indicaciones para llegar..."></textarea></label></div><div class="form-foot"><span class="privacy-note">🔒 Tus datos se usan únicamente para coordinar la recolección.</span><button class="btn btn-primary" type="submit">Enviar solicitud <span>→</span></button></div></form><aside class="side-note"><div class="note-icon">✳</div><h3>¿Sabías que?</h3><p>Los residuos orgánicos pueden aprovecharse mediante procesos de compostaje para producir abono que nutre la huerta comunitaria.</p><div class="note-divider"></div><b>Antes de entregar</b><ul><li>Separa los materiales por tipo.</li><li>Mantén limpios y secos los reciclables.</li><li>Indica si necesitas alguna orientación.</li></ul></aside></div></section>
+      <section class="view" id="view-solicitudes"><div class="page-title"><div class="eyebrow">SEGUIMIENTO</div><h1>Mis solicitudes</h1><p>Consulta el estado y la programación de tus recolecciones.</p></div><div class="panel table-panel"><div class="table-toolbar"><b>Historial de solicitudes</b><button class="btn btn-light btn-small" id="refreshRequests">↻ Actualizar</button></div><div id="requestList" class="request-list"><div class="empty-state">Inicia sesión para consultar tus solicitudes.</div></div></div><div class="panel table-panel notification-panel"><div class="table-toolbar"><b>Mis notificaciones</b><span class="muted">Actualizaciones de tus solicitudes</span></div><div id="citizenNotifications" class="notification-list"><div class="empty-state">Inicia sesión para consultar tus avisos.</div></div></div></section>
+      <section class="view" id="view-educacion"><div class="page-title"><div class="eyebrow">APRENDE Y PARTICIPA</div><h1>Separar bien hace la diferencia.</h1><p>Una guía práctica para aprovechar los residuos desde casa y los negocios.</p></div><div class="education-grid"><article class="education-card"><div class="education-head organic-head"><span>🌱</span><small>FLUJO ORGÁNICO</small></div><div class="education-body"><h2>Residuos orgánicos</h2><p>Materiales biodegradables que pueden aprovecharse para elaborar compost y abono.</p><b>¿Qué puedes entregar?</b><ul><li>Cáscaras y restos de frutas.</li><li>Restos de verduras y hortalizas.</li><li>Residuos vegetales aptos para compostaje.</li></ul><div class="tip">Consejo: evita mezclar estos residuos con plásticos, vidrio o productos químicos.</div><button class="btn btn-primary btn-block" data-go="solicitar" data-flow="organico">Solicitar ruta orgánica →</button></div></article><article class="education-card"><div class="education-head recycle-head"><span>♻️</span><small>FLUJO RECICLABLE</small></div><div class="education-body"><h2>Residuos reciclables</h2><p>Materiales que pueden recuperarse y reincorporarse a nuevos procesos productivos.</p><b>¿Qué puedes entregar?</b><ul><li>Papel y cartón limpios y secos.</li><li>Envases plásticos aprovechables.</li><li>Vidrio y metales separados.</li></ul><div class="tip">Consejo: limpia los envases, déjalos secar y aplana las cajas para facilitar su manejo.</div><button class="btn btn-primary btn-block" data-go="solicitar" data-flow="reciclable">Solicitar ruta reciclable →</button></div></article></div><div class="info-callout"><b>Una separación responsable empieza en la fuente.</b><span>Si tienes dudas sobre un material, descríbelo en las observaciones de tu solicitud para recibir orientación.</span></div></section>
+      <section class="view" id="view-puntos"><div class="page-title"><div class="eyebrow">TU PARTICIPACIÓN CUENTA</div><h1>Mis puntos</h1><p>Reconocemos tu compromiso con la gestión comunitaria de residuos.</p></div><div class="points-hero"><div><span class="eyebrow">SALDO DISPONIBLE</span><div class="points-number" id="pointsBalance">0 <small>puntos</small></div><p>Los puntos se acreditan después de registrar una recolección.</p></div><div class="points-star">✳</div></div><div class="panel"><div class="table-toolbar"><b>¿Cómo se calculan?</b></div><p class="plain-copy">El sistema utiliza una regla de puntos configurable según el peso registrado por el recolector. La equivalencia visible en esta versión es un parámetro demostrativo pendiente de validación por la Fundación Santo Domingo; no constituye una tabla oficial de incentivos.</p></div></section>
+      <section class="view" id="view-operacion"><div class="page-title"><div class="eyebrow">GESTIÓN DEL COLECTIVO</div><h1>Panel operativo</h1><p>Revisa solicitudes, coordina responsables y registra las recolecciones.</p></div><section class="panel admin-users-panel admin-only hidden"><div class="table-toolbar"><div><b>Gestión de usuarios y perfiles</b><p class="muted">Administra los seis perfiles y el estado de las cuentas.</p></div><button class="btn btn-light btn-small" id="refreshAdminUsers" type="button">↻ Actualizar</button></div><div id="adminUsersList" class="admin-users-list"><div class="empty-state">Cargando usuarios…</div></div></section><div class="stats-grid" id="statsGrid"></div><div class="panel table-panel"><div class="table-toolbar"><b>Bandeja de solicitudes</b><button class="btn btn-light btn-small" id="refreshOps">↻ Actualizar</button></div><div id="opsList" class="request-list"></div></div><div class="panel table-panel notification-panel"><div class="table-toolbar"><b>Notificaciones del equipo</b><span class="muted">Avisos internos</span></div><div id="staffNotifications" class="notification-list"><div class="empty-state">No hay notificaciones nuevas.</div></div></div></section>
+    </div>
+    <footer class="footer"><span>© 2026 EcoConecta · Villas de San Pablo</span><span class="footer-support">Con el apoyo de <img src="/static/img/logo-fundacion-santo-domingo.png" alt="Fundación Santo Domingo"></span><span>Una comunidad que transforma ♻</span></footer>
+  </main>
+</div>
+
+<button class="chat-launcher" id="chatLauncher" type="button" aria-expanded="false">💬 Habla con EcoConecta</button>
+<section class="chat-panel hidden" id="chatPanel" aria-label="Asistente virtual EcoConecta">
+  <header class="chat-head"><div><strong>Asistente EcoConecta</strong><small>Pregúntame con tus propias palabras</small></div><button class="chat-close" id="chatClose" type="button" aria-label="Cerrar chat">×</button></header>
+  <div class="chat-messages" id="chatMessages" aria-live="polite"><div class="chat-bubble bot">¡Hola! Soy EcoBot, el asistente gratuito de EcoConecta. Puedes preguntarme con tus propias palabras sobre residuos, reciclaje, solicitudes, seguimiento, puntos y uso de la plataforma. ¿En qué te ayudo?</div></div>
+  <form class="chat-form" id="chatForm"><textarea id="chatInput" maxlength="2000" rows="2" placeholder="Escribe tu pregunta..." aria-label="Escribe tu pregunta" required></textarea><button type="submit" id="chatSend">Enviar</button></form>
+  <div class="chat-disclaimer">Asistente local gratuito con información de EcoConecta. No consulta datos privados ni reemplaza la confirmación del equipo responsable.</div>
+</section>
+
+<div class="modal-backdrop hidden" id="authModal"><div class="modal"><button class="modal-close" id="closeAuth">×</button><div class="brand modal-brand"><img src="/static/img/logo-ecoconecta.png" alt="EcoConecta" class="modal-logo-img"></div><div class="auth-tabs"><button class="selected" data-auth-tab="login">Iniciar sesión</button><button data-auth-tab="register">Crear cuenta</button></div><form id="loginForm"><h2>Qué bueno tenerte aquí.</h2><p>Ingresa para gestionar tus solicitudes.</p><label class="field"><span>Teléfono</span><input name="phone" required placeholder="Tu número de celular"></label><label class="field"><span>Contraseña</span><input name="password" type="password" required placeholder="Tu contraseña"></label><button class="btn btn-primary btn-block" type="submit">Ingresar →</button></form><form id="registerForm" class="hidden"><h2>Únete a EcoConecta.</h2><p>Crea tu cuenta para participar en la comunidad.</p><label class="field"><span>Nombre completo</span><input name="full_name" required minlength="3"></label><label class="field"><span>Teléfono</span><input name="phone" required minlength="7"></label><label class="field"><span>Dirección</span><input name="address" placeholder="Tu dirección en Villas de San Pablo"></label><label class="field"><span>Correo electrónico (opcional)</span><input name="email" type="email"></label><label class="field"><span>Contraseña (mínimo 8 caracteres)</span><input name="password" type="password" minlength="8" required></label><button class="btn btn-primary btn-block" type="submit">Crear cuenta →</button></form></div></div>
+<div class="toast" id="toast"></div>
+<script src="/static/app.js"></script>
+</body></html>

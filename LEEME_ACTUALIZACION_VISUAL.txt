@@ -1,0 +1,13 @@
+ECOCONECTA 2.0.1 - ACTUALIZACION VISUAL
+
+Este paquete conserva backend, API, JavaScript, modelos, roles, base de datos y logos.
+El cambio corrige el contenedor de portada para que ocupe todo el ancho disponible,
+y mantiene las tarjetas superpuestas en la parte inferior.
+
+APLICAR_MEJORA_VISUAL.ps1 actualiza únicamente el CSS estático del contenedor web.
+No ejecuta docker compose up, no recrea PostgreSQL, no borra volúmenes y no necesita .env.
+
+IMPORTANTE SOBRE .env:
+El archivo .env contiene SECRET_KEY y contraseña de PostgreSQL propias de tu instalación.
+No está incluido en este ZIP por seguridad y porque no tengo acceso al archivo local original.
+No reemplaces tu .env ni generes uno nuevo para esta actualización visual.

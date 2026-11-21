@@ -1,0 +1,5 @@
+ECOCONECTA 2.0.2 - ACTUALIZACION VISUAL
+
+Incluye portada fotográfica panorámica a ancho completo, contraste de texto, tarjetas flotantes de acceso rápido, cabecera y ajustes responsive. Se conserva el backend FastAPI, autenticación, roles, API y PostgreSQL de la versión 2.0.1.
+
+Instalación en la instalación local existente: ejecutar en PowerShell desde esta carpeta .\APLICAR_MEJORA_VISUAL.ps1. El script respalda los activos estáticos existentes y actualiza únicamente index.html, styles.css y la fotografía en el contenedor web. No modifica .env, PostgreSQL ni volúmenes.
