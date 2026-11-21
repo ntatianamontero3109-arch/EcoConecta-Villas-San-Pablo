@@ -217,13 +217,24 @@ def register(data: RegisterInput, db: Session = Depends(get_db)):
                 address=data.address.strip() if data.address else None,
                 password_hash=hash_password(data.password), role="community")
     db.add(user)
+   
     try:
         db.commit()
     except Exception:
         db.rollback()
-        raise HTTPException(409, "No fue posible registrar la cuenta. Verifica teléfono y correo.")
-    db.refresh(user)
-    return {"access_token":create_token(user), "token_type":"bearer", "user":user_data(user)}
+
+        _logger.exception(
+            "FALLO AL GUARDAR REGISTRO DE USUARIO. "
+            "Telefono terminado en %s",
+            phone[-4:] if phone else "----"
+        )
+
+        raise HTTPException(
+            500,
+            "No fue posible crear la cuenta por un error del servidor. "
+            "El equipo técnico puede identificar la causa."
+        ) from None
+
 
 def user_data(user):
     return {"id":user.id,"name":user.full_name,"phone":user.phone,"role":user.role,"points":user.points}
