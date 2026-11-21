@@ -387,7 +387,6 @@ async function loadRequests(){
   toast('Error al consultar solicitudes: ' + message);
  }
 }
-}
 
 $('#refreshRequests').onclick=loadRequests;
 
