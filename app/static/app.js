@@ -387,16 +387,6 @@ async function loadRequests(){
   toast('Error al consultar solicitudes: ' + message);
  }
 }
-
-
- try{
-  const rows=await api('/requests');
-  $('#requestList').innerHTML=rows.length
-   ?rows.map(r=>requestRow(r)).join('')
-   :'<div class="empty-state">Todavía no tienes solicitudes registradas.</div>';
- }catch(e){
-  toast(e.message);
- }
 }
 
 $('#refreshRequests').onclick=loadRequests;
