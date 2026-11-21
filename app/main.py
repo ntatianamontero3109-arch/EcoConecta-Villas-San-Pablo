@@ -53,8 +53,9 @@ def clear_login_failures(key: str):
         _login_attempts.pop(key, None)
 
 
+
 def migrate_legacy_users_table():
-    """Corrige esquemas antiguos sin eliminar registros."""
+    """Completa columnas faltantes sin borrar datos."""
     inspector = inspect(engine)
 
     if "users" not in inspector.get_table_names():
@@ -65,42 +66,60 @@ def migrate_legacy_users_table():
         for column in inspector.get_columns("users")
     }
 
-    if "full_name" in columns:
-        return
-
     with engine.begin() as connection:
 
-        if "name" in columns:
-            connection.execute(text(
-                'ALTER TABLE users RENAME COLUMN "name" TO full_name'
-            ))
-        else:
-            connection.execute(text(
-                "ALTER TABLE users ADD COLUMN full_name VARCHAR(120)"
-            ))
+        if "full_name" not in columns:
+            if "name" in columns:
+                connection.execute(text(
+                    'ALTER TABLE users RENAME COLUMN "name" TO full_name'
+                ))
+            else:
+                connection.execute(text(
+                    "ALTER TABLE users ADD COLUMN full_name VARCHAR(120)"
+                ))
+            columns.add("full_name")
 
-        if "phone" in columns:
-            connection.execute(text("""
-                UPDATE users
-                SET full_name = COALESCE(
-                    NULLIF(BTRIM(full_name), ''),
-                    NULLIF(BTRIM(phone), ''),
-                    'Usuario ' || id::text
+        missing_columns = {
+            "address": "VARCHAR(240)",
+            "email": "VARCHAR(160)",
+            "password_hash": "VARCHAR(255)",
+            "role": "VARCHAR(40) NOT NULL DEFAULT 'community'",
+            "active": "BOOLEAN NOT NULL DEFAULT TRUE",
+            "points": "INTEGER NOT NULL DEFAULT 0",
+            "created_at": (
+                "TIMESTAMP WITHOUT TIME ZONE "
+                "NOT NULL DEFAULT CURRENT_TIMESTAMP"
+            ),
+        }
+
+        for name, column_type in missing_columns.items():
+            if name not in columns:
+                connection.execute(text(
+                    f'ALTER TABLE users ADD COLUMN "{name}" {column_type}'
+                ))
+                columns.add(name)
+                _logger.warning(
+                    "Columna agregada a users: %s", name
                 )
-                WHERE full_name IS NULL OR BTRIM(full_name) = ''
-            """))
-        else:
-            connection.execute(text("""
-                UPDATE users
-                SET full_name = 'Usuario ' || id::text
-                WHERE full_name IS NULL OR BTRIM(full_name) = ''
-            """))
+
+        connection.execute(text("""
+            UPDATE users
+            SET full_name = COALESCE(
+                NULLIF(BTRIM(full_name), ''),
+                NULLIF(BTRIM(phone), ''),
+                'Usuario ' || id::text
+            )
+            WHERE full_name IS NULL OR BTRIM(full_name) = ''
+        """))
 
         connection.execute(text(
             "ALTER TABLE users ALTER COLUMN full_name SET NOT NULL"
         ))
 
-    _logger.info("Migración de usuarios completada correctamente.")
+    _logger.info(
+        "Migración de la tabla users completada correctamente."
+    )
+
 
 
 @asynccontextmanager
