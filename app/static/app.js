@@ -796,4 +796,3 @@ $('#chatForm')?.addEventListener('submit',async e=>{
   input.focus();
  }
 });
-value.trim();if(!question)return;appendChat('user',question);chatHistory.push({role:'user',content:question});input.value='';$('#chatSend').disabled=true;$('#chatSend').textContent='…';try{const result=await api('/chat',{method:'POST',body:JSON.stringify({messages:chatHistory.slice(-10)})});const answer=result.answer||'No recibí una respuesta.';appendChat('bot',answer);chatHistory.push({role:'assistant',content:answer});}catch(err){appendChat('bot',err.message==='El asistente inteligente todavía no está configurado. Puedes comunicarte con el equipo de EcoConecta.'?err.message:'No pude procesar la pregunta en este momento. Inténtalo nuevamente o contacta al equipo de EcoConecta.');}finally{$('#chatSend').disabled=false;$('#chatSend').textContent='Enviar';input.focus();}});
