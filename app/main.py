@@ -110,15 +110,21 @@ def migrate_legacy_users_table():
             "ALTER TABLE users ALTER COLUMN email DROP NOT NULL"
         ))
 
-        connection.execute(text("""
-            UPDATE users
-            SET full_name = COALESCE(
-                NULLIF(BTRIM(full_name), ''),
-                NULLIF(BTRIM(phone), ''),
-                'Usuario ' || id::text
-            )
-            WHERE full_name IS NULL OR BTRIM(full_name) = ''
-        """))
+        
+        # CORRECCION DEFINITIVA DE LA COLUMNA is_pilot
+        # Los nuevos usuarios comunitarios no son usuarios piloto.
+        if "is_pilot" in columns:
+            connection.execute(text("""
+                UPDATE users
+                SET is_pilot = FALSE
+                WHERE is_pilot IS NULL
+            """))
+
+            connection.execute(text("""
+                ALTER TABLE users
+                ALTER COLUMN is_pilot SET DEFAULT FALSE
+            """))
+
 
 
         connection.execute(text("""
