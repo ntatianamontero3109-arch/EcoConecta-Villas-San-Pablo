@@ -73,6 +73,7 @@ def migrate_legacy_users_table():
                 connection.execute(text(
                     'ALTER TABLE users RENAME COLUMN "name" TO full_name'
                 ))
+                
             else:
                 connection.execute(text(
                     "ALTER TABLE users ADD COLUMN full_name VARCHAR(120)"
@@ -115,6 +116,34 @@ def migrate_legacy_users_table():
         connection.execute(text(
             "ALTER TABLE users ALTER COLUMN full_name SET NOT NULL"
         ))
+                # Sincronizar el consecutivo de usuarios existentes
+        sequence_name = connection.scalar(text(
+            "SELECT pg_get_serial_sequence('users', 'id')"
+        ))
+
+        if not sequence_name:
+            connection.execute(text(
+                "CREATE SEQUENCE IF NOT EXISTS users_id_seq"
+            ))
+            connection.execute(text(
+                "ALTER TABLE users ALTER COLUMN id "
+                "SET DEFAULT nextval('users_id_seq')"
+            ))
+            connection.execute(text(
+                "ALTER SEQUENCE users_id_seq OWNED BY users.id"
+            ))
+            sequence_name = "users_id_seq"
+
+        connection.execute(
+            text("""
+                SELECT setval(
+                    CAST(:sequence_name AS regclass),
+                    GREATEST(COALESCE((SELECT MAX(id) FROM users), 0), 1),
+                    EXISTS (SELECT 1 FROM users)
+                )
+            """),
+            {"sequence_name": sequence_name}
+        )
 
     _logger.info(
         "Migración de la tabla users completada correctamente."
@@ -228,31 +257,50 @@ def health(db: Session = Depends(get_db)):
 def register(data: RegisterInput, db: Session = Depends(get_db)):
     phone = data.phone.strip()
     email = data.email.strip().lower() if data.email else None
+
     if db.scalar(select(User).where(User.phone == phone)):
         raise HTTPException(409, "Este teléfono ya está registrado")
-    if email and db.scalar(select(User).where(func.lower(User.email) == email)):
+
+    if email and db.scalar(
+        select(User).where(func.lower(User.email) == email)
+    ):
         raise HTTPException(409, "Este correo electrónico ya está registrado")
-    user = User(full_name=data.full_name.strip(), phone=phone, email=email,
-                address=data.address.strip() if data.address else None,
-                password_hash=hash_password(data.password), role="community")
+
+    user = User(
+        full_name=data.full_name.strip(),
+        phone=phone,
+        email=email,
+        address=data.address.strip() if data.address else None,
+        password_hash=hash_password(data.password),
+        role="community"
+    )
+
     db.add(user)
-   
+
     try:
         db.commit()
+        db.refresh(user)
+
     except Exception:
         db.rollback()
 
         _logger.exception(
-            "FALLO AL GUARDAR REGISTRO DE USUARIO. "
-            "Telefono terminado en %s",
-            phone[-4:] if phone else "----"
+            "ERROR REAL AL REGISTRAR USUARIO. Teléfono terminado en %s",
+            phone[-4:]
         )
 
         raise HTTPException(
             500,
-            "No fue posible crear la cuenta por un error del servidor. "
-            "El equipo técnico puede identificar la causa."
+            "No fue posible guardar la cuenta. "
+            "Consulta los registros del servidor."
         ) from None
+
+    return {
+        "access_token": create_token(user),
+        "token_type": "bearer",
+        "user": user_data(user)
+    }
+
 
 
 def user_data(user):
