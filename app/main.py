@@ -93,6 +93,7 @@ def migrate_legacy_users_table():
             ),
         }
 
+        
         for name, column_type in missing_columns.items():
             if name not in columns:
                 connection.execute(text(
@@ -102,9 +103,23 @@ def migrate_legacy_users_table():
                 _logger.warning(
                     "Columna agregada a users: %s", name
                 )
-                connection.execute(text(
+
+        # CORRECCION DEFINITIVA: el correo es opcional.
+        # Se ejecuta siempre, aunque la columna ya exista.
+        connection.execute(text(
             "ALTER TABLE users ALTER COLUMN email DROP NOT NULL"
         ))
+
+        connection.execute(text("""
+            UPDATE users
+            SET full_name = COALESCE(
+                NULLIF(BTRIM(full_name), ''),
+                NULLIF(BTRIM(phone), ''),
+                'Usuario ' || id::text
+            )
+            WHERE full_name IS NULL OR BTRIM(full_name) = ''
+        """))
+
 
         connection.execute(text("""
             UPDATE users
