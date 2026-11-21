@@ -174,9 +174,6 @@ def migrate_legacy_users_table():
     )
 
 
-
-@asynccontextmanager
-
 def migrate_legacy_operational_tables():
     """Actualiza las tablas operativas sin eliminar registros."""
     tables = set(inspect(engine).get_table_names())
@@ -288,9 +285,14 @@ def migrate_legacy_operational_tables():
 
 async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
-    migrate_legacy_users_table()
-    yield
 
+    # Actualizar estructura de usuarios existentes
+    migrate_legacy_users_table()
+
+    # Actualizar estructura de solicitudes y notificaciones
+    migrate_legacy_operational_tables()
+
+    yield
 
 
 def normalize_colombian_phone(phone: str) -> str:
